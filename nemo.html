@@ -1,0 +1,204 @@
+<html>
+    <head>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+      <style type="text/css">
+        table, td, th { border: 1px solid green; }
+
+        button { width:200px;height:30px; }
+        td:hover{ background-color:green; }
+
+        .selected { background-color:#FF004D; } 
+      </style>
+      <script type="text/javascript">
+        var array;
+         var table_rows = 7;
+         var table_cols = 7;
+
+         var _drawTable = function ( ){
+            
+           var row_val = document.getElementById( 'row_value');
+           var col_val = document.getElementById( 'col_value');
+
+           table_rows = row_val.value;
+           table_cols = col_val.value;
+
+           drawTable( row_val.value, col_val.value );
+
+           array = new Array (table_rows);
+
+          for ( var i =0; i < table_rows; i++){
+            array[i] = new Array( table_cols);
+          }
+
+          for ( var i = 0; i < table_rows; i++){
+             for ( var k = 0; k < table_cols; k++){
+                array[i][k] = -1;
+             }
+           }
+ 
+          $(".col").on("click", function(){
+             if ( $(this).hasClass("selected") ){
+                $(this).removeClass("selected");
+                var row = $(this).data("row");
+                var col = $(this).data("col");
+
+                array[row][col] = -1;
+             }else{
+                $(this).addClass("selected");
+                var row = $(this).data("row");
+                var col = $(this).data("col");
+                array[row][col] = 1;
+             }
+            });
+
+         }
+
+          var drawTable = function ( row, col ){
+
+            var table_tag = "";
+
+            for ( var i = 0; i < row; i++) {
+                
+              var row_tag = "<tr>"
+              var col_tag = ""
+              
+                for ( var k = 0; k < col; k++) {
+                  col_tag += "<td data-row=\"" + i + "\" data-col=\"" + k + "\" class=\"col\" width=\"25\" height=\"25\"></td>"
+                }
+              row_tag += col_tag;
+              row_tag += "</tr>";
+              table_tag += row_tag;
+            }
+
+            var table = document.getElementById('table');
+            table.innerHTML = table_tag;
+          }
+
+          var makeNemoLogic = function(){
+
+            var output_str = "";
+            for ( var i =0; i < table_rows; i++){
+              var lastCount = 0;
+              var row_logic_number = ""
+
+              for ( var k = 0; k < table_cols; k++){
+                if ( ( array[i][k] == -1 ) && ( lastCount > 0) ){
+                  if ( row_logic_number.length > 0 ){
+                    row_logic_number += " / " + lastCount;
+                  } else{
+                    row_logic_number += "" + lastCount;
+                  }
+                  lastCount = 0;
+                } else if ( array[i][k] > -1 ){
+                  lastCount += 1;
+                }
+              }
+
+              if ( lastCount > 0 ){
+                 if ( row_logic_number.length > 0 ){
+                    row_logic_number += " / " + lastCount;
+                  } else {
+                    row_logic_number += "" + lastCount;
+                  }
+              } else if ( lastCount == 0 ){
+                if ( row_logic_number.length == 0 ) {
+                    row_logic_number = "0";
+                }
+              }
+
+              console.log ("row " + i + " : " + row_logic_number);
+              output_str += ("row " + i + " : " + row_logic_number + "<br/>")
+            }
+
+            output_str += "<br/>";
+
+            for ( var i =0; i < table_cols; i++){
+              var lastCount = 0;
+              var col_logic_number = ""
+
+              for ( var k = 0; k < table_rows; k++){
+                if ( ( array[k][i] == -1 ) && ( lastCount > 0) ){
+                  if ( col_logic_number.length > 0 ){
+                    col_logic_number += " / " + lastCount;
+                  } else{
+                    col_logic_number += "" + lastCount;
+                  }
+                  lastCount = 0;
+                } else if ( array[k][i] > -1 ){
+                  lastCount += 1;
+                }
+              }
+
+              if ( lastCount > 0 ){
+                 if ( col_logic_number.length > 0 ){
+                    col_logic_number += " / " + lastCount;
+                  } else {
+                    col_logic_number += "" + lastCount;
+                  }
+              } else if ( lastCount == 0 ){
+                if ( col_logic_number.length == 0 ) {
+                    col_logic_number = "0";
+                }
+              }
+
+              console.log ("col " + i + " : " + col_logic_number);
+              output_str +=  ("col " + i + " : " + col_logic_number + "<br/>");
+            }
+
+            $("#nemo_output").html( output_str );
+          }
+      </script>
+    </head>
+    <body>
+      <table id="table">
+      </table>
+
+      <div style="margin-top:20px; margin-left:20px;">
+        <input type="text" value="" size="3" id="row_value" style="height:30px;">
+         X 
+        <input type="text" value="" size="3" id="col_value" style="height:30px;">
+      <button type="button" onclick="_drawTable()" > 네모판 만들기 </button>
+      </div>
+      <div style="margin-top:20px; margin-left:20px;">
+      <button type="button" onclick="makeNemoLogic()" > 네모 로직을 만들어줘! </button>
+    </div>
+    <div style="margin-top:30px;" id="nemo_output">
+    </div>
+
+      <script type="text/javascript">
+
+        (function(){
+
+          drawTable ( table_rows, table_cols);
+
+          array = new Array (table_rows);
+
+          for ( var i =0; i < table_rows; i++){
+            array[i] = new Array( table_cols);
+          }
+
+          for ( var i = 0; i < table_rows; i++){
+             for ( var k = 0; k < table_cols; k++){
+                array[i][k] = -1;
+             }
+           }
+ 
+          $(".col").on("click", function(){
+             if ( $(this).hasClass("selected") ){
+                $(this).removeClass("selected");
+                var row = $(this).data("row");
+                var col = $(this).data("col");
+
+                array[row][col] = -1;
+             }else{
+                $(this).addClass("selected");
+                var row = $(this).data("row");
+                var col = $(this).data("col");
+                array[row][col] = 1;
+             }
+            });
+         })();
+      </script>
+    </body>
+</html>
